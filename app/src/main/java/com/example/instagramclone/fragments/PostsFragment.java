@@ -1,5 +1,6 @@
 package com.example.instagramclone.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,21 +27,45 @@ import java.util.List;
 
 
 public class PostsFragment extends Fragment {
+
+
+
     private RecyclerView rvPosts;
     protected PostsAdapter adapter;
     public static final String TAG ="PostFragment";
     protected List<Post> allPosts;
 
+    private SwipeRefreshLayout swipeContainer;
+
     public PostsFragment() {
         // Required empty public constructor
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posts, container, false);
 
+
+        View view = inflater.inflate(R.layout.fragment_posts,container,false);
+        // Inflate the layout for this fragment
+
+        swipeContainer = view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeContainer.setRefreshing(false);
+                adapter.clear();
+                adapter.addAll(allPosts);
+                queryPost();
+            }
+        });
+        swipeContainer.setColorSchemeColors(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+    return view;
     }
 
     @Override
@@ -76,6 +101,7 @@ public class PostsFragment extends Fragment {
             }
         });
     }
+
 
 
 
